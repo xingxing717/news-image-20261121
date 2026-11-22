@@ -322,6 +322,40 @@ def draw_story(d, x, y, width, headline, summary, source, max_bottom):
     return y + 1
 
 
+# ------------------------------------------------------------------ by the numbers
+# Four figures drawn from stories already on this page: the Ethiopia
+# displacement, the Timor-Leste quake, the GTA VI launch and Harden's
+# 51-point night. The strip sits in the empty band beneath the lead
+# story, above the section grid.
+NUMBERS = [
+    ("700,000", "DISPLACED IN ETHIOPIA", RED),
+    ("M6.8", "QUAKE OFF TIMOR", PURPLE),
+    ("$3.8BN", "GTA VI LAUNCH DAY", DARKRED),
+    ("51 PTS", "HARDEN PASSES KOBE", GREEN),
+]
+
+
+def draw_numbers_strip(d, x, y, w):
+    """'BY THE NUMBERS' strip: red header label plus four small stat
+    boxes, each with a big figure over a small caption."""
+    hf = font(SANS_B, 10)
+    nf = font(SANS_B, 12)
+    lf = font(SANS, 8)
+    d.rectangle([x, y + 8, x + 8, y + 16], fill=RED)
+    d.text((x + 12, y + 7), "BY THE NUMBERS", font=hf, fill=RED)
+    hx = x + 12 + tw(d, "BY THE NUMBERS", hf) + 12
+    gap = 6
+    bw = (x + w - hx - gap * 3) // 4
+    bh = 24
+    for i, (num, label, color) in enumerate(NUMBERS):
+        bx = hx + i * (bw + gap)
+        d.rectangle([bx, y, bx + bw, y + bh], fill=CARD, outline=RULE,
+                    width=1)
+        d.rectangle([bx, y, bx + 3, y + bh], fill=color)
+        d.text((bx + 9, y + 3), num, font=nf, fill=INK)
+        d.text((bx + 9, y + 15), label, font=lf, fill=GREY)
+
+
 def render():
     img = Image.new("RGB", (W, H), PAPER)
     d = ImageDraw.Draw(img)
@@ -362,6 +396,8 @@ def render():
     d.text((lx, y), "SOURCE: " + LEAD["source"], font=font(SANS_B, 9),
            fill=GREY)
     draw_gulf_scene(d, 624, 170, 384, 196)
+
+    draw_numbers_strip(d, 16, 349, 592)
 
     # ---- section grid: 3 cols x 2 rows
     gx, gy = 16, 374
